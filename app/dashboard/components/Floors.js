@@ -17,8 +17,8 @@ const Floors = () => {
     }
   };
   return (
-    <div className="p-2 border-2 border-gray-300 rounded-xl mt-2">
-      <div
+    <div className="p-2 border-2 border-gray-200 shadow-lg rounded-xl mt-2">
+      {/* <div
         className="h-10 w-10 border-2 border-gray-300 rounded-full relative top-10   flex justify-center items-center cursor-pointer transition-transform transform hover:scale-105"
         onClick={scrollToLeft}
       >
@@ -36,7 +36,7 @@ const Floors = () => {
             d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
           />
         </svg>
-      </div>
+      </div> */}
       <div
         className="ml-9 relative w-[800px] overflow-x-auto no-scrollbar"
         ref={scrollContainerRef}
@@ -64,7 +64,7 @@ const Floors = () => {
           ))}
         </ul>
       </div>
-      <div
+      {/* <div
         className="h-10 w-10 border-2 border-gray-300 rounded-full relative bottom-[44px] left-[800px] flex justify-center items-center cursor-pointer transition-transform transform hover:scale-105"
         onClick={scrollToRight}
       >
@@ -82,9 +82,9 @@ const Floors = () => {
             d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
           />
         </svg>
-      </div>
+      </div> */}
 
-      <div className="h-[460px]"></div>
+      <div className="h-[480px]"></div>
     </div>
   );
 };

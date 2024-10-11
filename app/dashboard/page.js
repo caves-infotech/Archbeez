@@ -3,7 +3,7 @@ import ProjectDetail from "./components/ProjectDetail";
 
 export default function DashboardPage() {
   return (
-    <div className=" w-[58%] mt-16 ml-auto mr-auto overflow-y-auto">
+    <div className=" w-[55%] mt-16 ml-auto mr-[17.5rem] overflow-y-auto">
       <ProjectDetail />
       <Floors />
     </div>
