@@ -169,7 +169,7 @@ const VerticalMenu = () => {
               />
             </svg>
 
-            <h2 className="text-sm">Doc's</h2>
+            <h2 className="text-sm">Doc&apos;s</h2>
           </li>
         </Link>
       </ul>
