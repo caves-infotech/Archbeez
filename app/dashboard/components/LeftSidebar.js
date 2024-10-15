@@ -42,31 +42,36 @@ const LeftSidebar = ({ selectedComponent }) => {
   };
 
   return (
-    <aside
-      className={`fixed w-[21.5%] h-[88vh] border-2 border-gray-200 rounded-xl m-2 top-16 shadow-lg transition-all duration-900 ${
-        sidebar ? "-left-96" : "left-16"
-      }`}
-    >
+    <div>
       <div>
-        <button className="fixed left-5 top-[5.5rem]" onClick={handleSlide}>
+        <button
+          className="fixed left-5 top-[4.4rem] z-50"
+          onClick={handleSlide}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
+            strokeWidth="1.5"
             stroke="currentColor"
-            class="size-7"
+            className="size-7"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
             />
           </svg>
         </button>
       </div>
-      {renderSelectedComponent()}
-    </aside>
+      <aside
+        className={`fixed w-[21.5%] h-[88vh] border-2 border-gray-300 rounded-xl m-2 top-16 shadow-lg transition-all duration-500 ${
+          sidebar ? "-left-96 -z-10" : "left-16 z-10"
+        }`}
+      >
+        <div className="h-full">{renderSelectedComponent()}</div>
+      </aside>
+    </div>
   );
 };
 

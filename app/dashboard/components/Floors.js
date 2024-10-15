@@ -1,7 +1,10 @@
 "use client";
 import React, { useRef, useState } from "react";
+import { useMyContext } from "./Context";
 import "../styles.css";
 const Floors = () => {
+  const { data } = useMyContext();
+  console.log(data);
   const [isScrolling, setIsScrolling] = useState();
   const scrollContainerRef = useRef(null);
   const scrollToRight = () => {
@@ -17,7 +20,7 @@ const Floors = () => {
     }
   };
   return (
-    <div className="p-2 border-2 border-gray-200 shadow-lg rounded-xl mt-2">
+    <div className="p-2 border-2 border-gray-300 shadow-lg rounded-xl mt-2">
       {/* <div
         className="h-10 w-10 border-2 border-gray-300 rounded-full relative top-10   flex justify-center items-center cursor-pointer transition-transform transform hover:scale-105"
         onClick={scrollToLeft}
@@ -38,30 +41,24 @@ const Floors = () => {
         </svg>
       </div> */}
       <div
-        className="ml-9 relative w-[800px] overflow-x-auto no-scrollbar"
+        className="ml-3 relative w-[800px] overflow-x-auto no-scrollbar"
         ref={scrollContainerRef}
       >
         <ul className="flex w-max">
-          {[
-            "Ground floor",
-            "First",
-            "Second",
-            "Third",
-            "Fourth",
-            "Fifth",
-            "Sixth",
-            "Seventh",
-            "Eighth",
-            "Ninth",
-            "Tenth",
-          ].map((e) => (
-            <li
-              className="w-32 border-b-4 hover:border-b-gray-300 p-2 flex justify-center"
-              key={e}
-            >
-              {e}
+          {data.floors && data.floors.length > 0 ? (
+            data.floors.map((e) => (
+              <li
+                className="w-32 border-b-4 hover:border-b-gray-400 p-2 flex justify-center cursor-pointer"
+                key={e}
+              >
+                {e}
+              </li>
+            ))
+          ) : (
+            <li className="p-2 flex justify-center text-gray-500">
+              No floors available
             </li>
-          ))}
+          )}
         </ul>
       </div>
       {/* <div
@@ -84,7 +81,7 @@ const Floors = () => {
         </svg>
       </div> */}
 
-      <div className="h-[480px]"></div>
+      <div className="h-[488px]"></div>
     </div>
   );
 };

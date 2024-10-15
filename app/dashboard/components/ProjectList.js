@@ -1,18 +1,42 @@
-import React, { useState } from "react";
+"use client";
+import React, { useRef, useState } from "react";
+import { useMyContext } from "./Context";
 
 const ProjectList = () => {
-  const [selectedType, setSelectedType] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType] = useState(["All", "Architect", "Interior", "Layout"]); // Keep original type list intact
+  const [selectedTypeFilter, setSelectedTypeFilter] = useState("All"); // Use this for filtering
   const [selectedSubType, setSelectedSubType] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [newItem, setNewItem] = useState("");
+  const [isInputVisible, setIsInputVisible] = useState(false);
+  const inputRef = useRef(null);
+  const scrollContainerRef = useRef(null);
+  const { setData } = useMyContext();
+
+  const scrollToRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 200, behavior: "smooth" });
+    }
+  };
+
+  const scrollToLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -200, behavior: "smooth" });
+    }
+  };
 
   const predefinedProjects = [
     {
       projectId: 500,
       name: "Project 1",
-      members: [{ id: "id1", name: "Member 1", role: "creator" }],
+      members: [
+        { id: "id1", name: "Member 1", role: "creator" },
+        { id: "id2", name: "Member 2", role: "employee" },
+      ],
       status: "ongoing",
-      type: "landscape",
-      subtype: "industrial",
+      type: "interior",
+      subtype: "bunglow",
       predefinedDesigns: [],
     },
     {
@@ -21,31 +45,110 @@ const ProjectList = () => {
       members: [{ id: "id2", name: "Member 2", role: "Architect" }],
       status: "completed",
       type: "interior",
+      subtype: "industrial",
       predefinedDesigns: [],
     },
-    // Add more projects as needed
+    {
+      projectId: 501,
+      name: "Project 3",
+      members: [{ id: "id2", name: "Member 2", role: "Architect" }],
+      status: "completed",
+      type: "architect",
+      subtype: "commercial",
+      predefinedDesigns: [],
+    },
   ];
 
-  const types = [
-    "architecture",
-    "layouts",
-    "interior",
-    "Exterior",
-    "Landscape",
-    "contruction",
+  const subtypes = [
+    "All",
+    "Bunglow",
+    "Commercial",
+    "Residential",
+    "Industrial",
+    "Institutional",
   ];
-  const subtypes = ["commercial", "residential", "industrial", "institutional"];
-  const statuses = ["Ongoing", "Completed", "Pending"];
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const statuses = ["All", "Ongoing", "Completed", "Pending"];
 
-  const filteredProjects = predefinedProjects.filter((project) =>
-    project.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // filter function
+  const filteredProjects = predefinedProjects.filter((project) => {
+    const matchesSearchTerm = project.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      selectedStatus === "All" ||
+      selectedStatus === "" ||
+      project.status.toLowerCase() === selectedStatus.toLowerCase();
+    const matchesSubtype =
+      selectedSubType === "All" ||
+      selectedSubType === "" ||
+      project.subtype?.toLowerCase() === selectedSubType.toLowerCase();
+    const matchTypes =
+      selectedTypeFilter === "All" ||
+      project.type?.toLowerCase() === selectedTypeFilter.toLowerCase(); // Only filter based on selectedTypeFilter
+
+    return matchesSearchTerm && matchesStatus && matchesSubtype && matchTypes;
+  });
+
+  // Function to handle adding a new item
+  const addNewItem = (e) => {
+    if (e.key === "Enter" && newItem.trim()) {
+      setSelectedSubType(newItem); // Set the new item as the selectedSubType for filtering
+      setNewItem(""); // Clear the input field
+      setIsInputVisible(false); // Hide the input field after adding the item
+    }
+  };
+
+  // Function to toggle the input field visibility
+  const toggleInput = () => {
+    setIsInputVisible((prev) => !prev);
+    if (!isInputVisible) {
+      setTimeout(() => inputRef.current.focus(), 0);
+    } else {
+      setNewItem("");
+    }
+  };
+
+  // Function to send details
+  const sendDetails = (project) => {
+    setData(project);
+  };
 
   return (
     <div className="h-full p-4 rounded-lg shadow-md ">
-      <div className="m-2 w-full flex flex-col items-start">
+      <svg
+        className="w-8 h-8 relative top-12 right-5 cursor-pointer inline-block"
+        onClick={scrollToLeft}
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth="1.5"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18"
+        />
+      </svg>
+
+      <svg
+        className="w-8 h-8 relative top-12 left-60 cursor-pointer inline-block"
+        onClick={scrollToRight}
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth="1.5"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+        />
+      </svg>
+      <div className="m-2 w-[90%] flex flex-col items-start relative bottom-10 right">
+        {/* Search */}
         <button className="flex items-center justify-start h-10 w-full p-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors duration-300">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -70,26 +173,61 @@ const ProjectList = () => {
           />
         </button>
 
-        {/* Type Dropdown */}
-        {/* <div className="w-full">
-          <div className="w-full p-2 border border-gray-200 rounded-lg text-sm">
-            {selectedType || "Select a type"}
-          </div>
-          <ul className="w-full p-2 border border-gray-200 rounded-lg bg-white mt-1">
-            {types.map((type, index) => (
+        {/* Horizontal filter list */}
+
+        <div
+          className="w-full overflow-x-auto no-scrollbar my-3"
+          ref={scrollContainerRef}
+        >
+          <ul className="flex w-full h-8 ">
+            {selectedType.map((item, index) => (
               <li
+                className={`w-24 px-6 border-b-4 ${
+                  selectedTypeFilter === item ? "border-b-gray-400" : ""
+                } p-2 flex justify-center items-center cursor-pointer`}
                 key={index}
-                className="p-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => setSelectedType(type)} // Set the selected type
+                onClick={() => setSelectedTypeFilter(item)} // Only update filter, not the original list
               >
-                {type}
+                {item}
               </li>
             ))}
-          </ul>
-        </div> */}
 
-        {/* Type and Subtype Dropdowns */}
-        <div className="w-full flex gap-2 items-center justify-between my-2">
+            {/* Conditionally render input field or SVG */}
+            <li className="w-24 p-2 flex justify-center items-center">
+              {isInputVisible ? (
+                <input
+                  type="text"
+                  placeholder="New Item"
+                  value={newItem}
+                  onChange={(e) => setNewItem(e.target.value)} // Update newItem state
+                  onKeyDown={addNewItem} // Add item on Enter key press
+                  className="px-6 border-none rounded-lg w-28 focus:outline-none"
+                  ref={inputRef} // Attach ref for focusing
+                />
+              ) : (
+                <button className="p-2 rounded-md" onClick={toggleInput}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
+                </button>
+              )}
+            </li>
+          </ul>
+        </div>
+
+        {/* Dropdown */}
+        <div className="w-full flex gap-2 items-center justify-between mt-1">
           {/* Status Dropdown */}
           <div className="w-1/2 ">
             <select
@@ -97,7 +235,7 @@ const ProjectList = () => {
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none"
             >
-              <option value="" disabled>
+              <option value="" disabled className="hidden">
                 Status
               </option>
               {statuses.map((status, index) => (
@@ -113,10 +251,10 @@ const ProjectList = () => {
             <select
               value={selectedSubType}
               onChange={(e) => setSelectedSubType(e.target.value)}
-              className="w-full p-2 border border-gray-200 rounded-lg text-sm focus:outline-none"
+              className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none"
             >
-              <option value="" disabled>
-                Sub-types
+              <option value="" disabled className="hidden">
+                Subtypes
               </option>
               {subtypes.map((subtype, index) => (
                 <option key={index} value={subtype}>
@@ -128,32 +266,18 @@ const ProjectList = () => {
         </div>
       </div>
 
-      <ul className="flex flex-col items-start p-2 gap-2">
+      {/* Render filtered project */}
+      <div className="relative bottom-10">
         {filteredProjects.map((project) => (
-          <li key={project.projectId} className="w-10/12">
-            <button className="flex items-center justify-start h-9 w-full px-2 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-base">
-              {/* SVG Icon */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 mr-2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
-                />
-              </svg>
-              <span className="text-left text-slate-600 font-medium">
-                {project.name}
-              </span>
-            </button>
-          </li>
+          <div
+            key={project.projectId}
+            className="bg-white rounded-lg shadow-lg p-1 mb-1 border border-gray-100 cursor-pointer"
+            onClick={() => sendDetails(project)}
+          >
+            <h2 className="text-md">{project.name}</h2>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
