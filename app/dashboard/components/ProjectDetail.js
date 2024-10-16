@@ -4,7 +4,7 @@ import { useMyContext } from "./Context";
 
 const ProjectDetail = () => {
   const { data } = useMyContext();
-  console.log(data);
+
   return (
     <div className="h-24 p-2 border-2 border-gray-300 rounded-xl  ">
       <div>

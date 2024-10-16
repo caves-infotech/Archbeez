@@ -1,10 +1,13 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { useMyContext } from "./Context";
+import ProjectDetail from "./ProjectDetail";
+import ProjectCard from "./ProjectCard";
+import CustomButton from "./CustomButton";
 
 const ProjectList = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType] = useState(["All", "Architect", "Interior", "Layout"]); // Keep original type list intact
+  const [selectedType] = useState(["All", "Architect", "Interior", "Layout"]);
   const [selectedTypeFilter, setSelectedTypeFilter] = useState("All"); // Use this for filtering
   const [selectedSubType, setSelectedSubType] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -13,7 +16,11 @@ const ProjectList = () => {
   const inputRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const { setData } = useMyContext();
-
+  const [toggle, setToggle] = useState(false);
+  const handleTogglee = () => {
+    setToggle(!toggle);
+  };
+  console.log(toggle);
   const scrollToRight = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: 200, behavior: "smooth" });
@@ -29,7 +36,7 @@ const ProjectList = () => {
   const predefinedProjects = [
     {
       projectId: 500,
-      name: "Project 1",
+      name: "XYZ-PQR",
       members: [
         { id: "id1", name: "Member 1", role: "creator" },
         { id: "id2", name: "Member 2", role: "employee" },
@@ -38,24 +45,30 @@ const ProjectList = () => {
       type: "interior",
       subtype: "bunglow",
       predefinedDesigns: [],
+      floors: ["ground", "first", "second", "third"],
+      location: "pune",
     },
     {
-      projectId: 501,
-      name: "Project 2",
+      projectId: 508,
+      name: "ABC-XYZ",
       members: [{ id: "id2", name: "Member 2", role: "Architect" }],
       status: "completed",
       type: "interior",
       subtype: "industrial",
       predefinedDesigns: [],
+      floors: ["ground", "first", "second", "third"],
+      location: "nashik",
     },
     {
-      projectId: 501,
-      name: "Project 3",
+      projectId: 502,
+      name: "PQR-ABC",
       members: [{ id: "id2", name: "Member 2", role: "Architect" }],
       status: "completed",
       type: "architect",
       subtype: "commercial",
       predefinedDesigns: [],
+      floors: ["ground", "first", "second"],
+      location: "mumbai",
     },
   ];
 
@@ -117,23 +130,23 @@ const ProjectList = () => {
   return (
     <div className="h-full p-4 rounded-lg shadow-md ">
       <svg
-        className="w-8 h-8 relative top-12 right-5 cursor-pointer inline-block"
-        onClick={scrollToLeft}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
-        strokeWidth="1.5"
+        stroke-width="1.5"
         stroke="currentColor"
+        className="w-6 h-6 relative top-12 right-4 cursor-pointer inline-block"
+        onClick={scrollToLeft}
       >
         <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15.75 19.5 8.25 12l7.5-7.5"
         />
       </svg>
 
       <svg
-        className="w-8 h-8 relative top-12 left-60 cursor-pointer inline-block"
+        className="w-6 h-6 relative top-12 left-80 cursor-pointer inline-block"
         onClick={scrollToRight}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -144,9 +157,10 @@ const ProjectList = () => {
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+          d="m8.25 4.5 7.5 7.5-7.5 7.5"
         />
       </svg>
+
       <div className="m-2 w-[90%] flex flex-col items-start relative bottom-10 right">
         {/* Search */}
         <button className="flex items-center justify-start h-10 w-full p-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors duration-300">
@@ -271,13 +285,26 @@ const ProjectList = () => {
         {filteredProjects.map((project) => (
           <div
             key={project.projectId}
-            className="bg-white rounded-lg shadow-lg p-1 mb-1 border border-gray-100 cursor-pointer"
-            onClick={() => sendDetails(project)}
+            className={`${
+              toggle ? "w-[40%]" : "w-full"
+            } h-24 text-left shadow-lg mb-4 hover:bg-gray-50  cursor-pointer transition-all duration-200 ease-in-out`}
+            onClick={() => {
+              sendDetails(project);
+              handleTogglee();
+            }}
           >
-            <h2 className="text-md">{project.name}</h2>
+            <ProjectCard project={project} test={toggle} />
           </div>
         ))}
       </div>
+
+      {toggle && (
+        <div className="w-52 h-[488px] relative bg-red-400 left-36 bottom-[23.5rem] rounded-md">
+          <ul>
+            <li>Electrical</li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
